@@ -1,0 +1,59 @@
+.title {
+  font-size: 2.5rem;
+  text-align: center;
+}
+.top-section {
+  display: flex;
+  justify-content: space-between;
+}
+button {
+  border-radius: 8px;
+  font-size: 1rem;
+  text-decoration: none;
+  background-color: #4a5a75;
+  border: none;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  color: #e7e7e9;
+  transition: all 0.3s ease;
+}
+button:hover {
+  background-color: #2563eb;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+.table {
+  border-collapse: collapse;
+  width: 100%;
+
+  margin: 20px 0;
+  font-size: 1rem;
+  text-align: left;
+  gap: 1px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 3fr 2fr 0.5fr;
+}
+
+.table th,
+.table td {
+  border: 1px solid #4a5a75;
+  padding: 8px;
+  text-align: center;
+}
+
+.table th {
+  background-color: #364154;
+  text-transform: uppercase;
+}
+.table img {
+  width: 24px;
+  cursor: pointer;
+}
+.icon-container {
+  text-align: center;
+}
+.table td {
+  word-wrap: break-word;
+}
