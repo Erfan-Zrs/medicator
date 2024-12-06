@@ -1,0 +1,40 @@
+<h1 class="title">Medicator</h1>
+<div class="top-section">
+  <app-search-bar (searchEvent)="handleSearchMedicine($event)"></app-search-bar>
+  <button (click)="openModal()">Add medication</button>
+</div>
+<table class="table">
+  <thead>
+    <tr class="grid">
+      <th>Medication</th>
+      <th>Dosage</th>
+      <th>Frequency</th>
+      <th>Last Update Date</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="grid" *ngFor="let item of filteredMedications$ | async">
+      <td>{{ item.medicationName }}</td>
+      <td>{{ item.dosage }}</td>
+      <td>{{ item.frequency }}</td>
+      <td>{{ item.lastUpdate | date }}</td>
+      <td class="icon-container">
+        <img src="../../../assets/icons/edit.png" />
+      </td>
+    </tr>
+    {{
+      ""
+    }}
+  </tbody>
+</table>
+<app-modal-container
+  [isOpen]="showModal"
+  (closeModal)="closeModal()"
+  (submitModal)="handleSubmit()"
+>
+  <h1>Add medication</h1>
+  <app-medication-form
+    (formValuePassed)="onFormValuePassed($event)"
+  ></app-medication-form>
+</app-modal-container>
