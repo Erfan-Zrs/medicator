@@ -188,8 +188,16 @@ button[type="button"]:hover {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  margin-bottom: 8px;
 }
 .action-buttons {
   display: flex;
   gap: 16px;
+}
+button:disabled {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+  border: 1px solid #bbb;
+  opacity: 0.6;
 }

@@ -5,6 +5,7 @@ import {
   minLengthArray,
 } from '../../utils/form-array-validator';
 import { MedicationList } from '../../../models/medication-list';
+import { uniqueHoursValidator } from '../../utils/uniqe-hour-validator';
 
 @Component({
   selector: 'app-medication-modal',
@@ -35,12 +36,13 @@ export class MedicationModalComponent {
     selectedDays: this.formBuilder.array([], minLengthArray(1)),
     selectedHours: this.formBuilder.array(
       [],
-      [minLengthArray(1), maxLengthArray(5)]
+      [minLengthArray(1), maxLengthArray(5), uniqueHoursValidator]
     ),
     id: [''],
   });
   addHour(): void {
     this.selectedHours.push(this.formBuilder.control('00:00'));
+    this.medicationForm.get('selectedHours')?.markAsTouched();
   }
   ngOnInit(): void {
     if (this.data) {
@@ -92,6 +94,7 @@ export class MedicationModalComponent {
   }
 
   removeHour(index: number): void {
+    this.medicationForm.get('selectedHours')?.markAsTouched();
     this.selectedHours.removeAt(index);
   }
   onClose() {
