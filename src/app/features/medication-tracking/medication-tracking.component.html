@@ -1,6 +1,6 @@
 <h1 class="title">Medicator</h1>
 <div class="top-section">
-  <app-search-bar (searchEvent)="handleSearchMedicine($event)"></app-search-bar>
+  <app-search-bar (search)="handleSearchMedicine($event)"></app-search-bar>
   <button (click)="openModal()">Add medication</button>
 </div>
 <table class="table">
@@ -16,8 +16,9 @@
   <tbody>
     <tr class="grid" *ngFor="let item of filteredMedications$ | async">
       <td>{{ item.medicationName }}</td>
-      <td>{{ item.dosage }}</td>
-      <td>{{ item.frequency }}</td>
+      <td>{{ item.dosage }} - {{ item.unit }}</td>
+      <td>{{ item.selectedDays | frequencyPipe : item.selectedHours }}</td>
+
       <td>{{ item.lastUpdate | date }}</td>
       <td class="icon-container">
         <img src="../../../assets/icons/edit.png" />
@@ -28,13 +29,13 @@
     }}
   </tbody>
 </table>
-<app-modal-container
-  [isOpen]="showModal"
-  (closeModal)="closeModal()"
-  (submitModal)="handleSubmit()"
+@if(showModal){
+<app-medication-modal
+  [isVisible]="showModal"
+  (close)="closeModal()"
+  (submit)="handleSubmit($event)"
 >
-  <h1>Add medication</h1>
-  <app-medication-form
-    (formValuePassed)="onFormValuePassed($event)"
-  ></app-medication-form>
-</app-modal-container>
+  <h3 class="modal-title">Add New Medication</h3>
+  <form></form>
+</app-medication-modal>
+}

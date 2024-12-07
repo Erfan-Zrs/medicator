@@ -6,34 +6,13 @@ import { MedicationList } from '../../models/medication-list';
   providedIn: 'root',
 })
 export class medicationTrackerService {
-  tableData: MedicationList[] = [
-    {
-      medicationName: 'Aspirin',
-      dosage: '500mg',
-      frequency: 'Daily',
-      lastUpdate: new Date(),
-    },
-    {
-      medicationName: 'Ibuprofen',
-      dosage: '200mg',
-      frequency: 'Every 8 hours',
-      lastUpdate: new Date(),
-    },
-    {
-      medicationName: 'Paracetamol',
-      dosage: '1000mg',
-      frequency: 'Every 4 hours',
-      lastUpdate: new Date(),
-    },
-  ];
   private medicationList$: BehaviorSubject<any[]> = new BehaviorSubject<any[]>(
     []
   );
   constructor() {
     const storedData = localStorage.getItem('medicationList');
     const parsedData = storedData ? JSON.parse(storedData) : [];
-    // this.medicationList$.next(parsedData);
-    this.medicationList$.next(this.tableData);
+    this.medicationList$.next(parsedData);
   }
 
   getMedicationList(): Observable<any[]> {

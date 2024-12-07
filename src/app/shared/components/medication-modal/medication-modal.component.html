@@ -1,0 +1,105 @@
+<div class="modal-overlay" *ngIf="isVisible" (click)="onClose()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <div class="modal-content">
+      <form [formGroup]="medicationForm">
+        <div class="name-section">
+          <input
+            id="medicationName"
+            formControlName="medicationName"
+            type="text"
+            placeholder="Medication Name"
+            [class.invalid]="
+              medicationForm.get('medicationName')?.invalid &&
+              (medicationForm.get('medicationName')?.touched ||
+                medicationForm.get('medicationName')?.dirty)
+            "
+          />
+        </div>
+        <div class="form-group dosage-section">
+          <input
+            id="dosage"
+            formControlName="dosage"
+            type="number"
+            placeholder="dosage"
+            step="0.1"
+            [class.invalid]="
+              medicationForm.get('dosage')?.invalid &&
+              (medicationForm.get('dosage')?.touched ||
+                medicationForm.get('dosage')?.dirty)
+            "
+          />
+          <select
+            id="unit"
+            formControlName="unit"
+            placholder="unit"
+            [class.invalid]="
+              medicationForm.get('unit')?.invalid &&
+              medicationForm.get('unit')?.touched
+            "
+          >
+            <option value="Capsules">Capsules</option>
+            <option value="Tables">Tables</option>
+            <option value="Applications">Applications</option>
+            <option value="Drops">Drops</option>
+            <option value="Milligrams">Milligrams</option>
+            <option value="Micrograms">Micrograms</option>
+          </select>
+        </div>
+        <hr />
+        <h2>Frequency</h2>
+        <div class="week-days">
+          <div
+            *ngFor="let day of weekDays; let i = index"
+            class="day-button"
+            [class.selected]="selectedDays.value.includes(day.value)"
+            (click)="toggleDay(day.value)"
+            [class.invalid]="
+              medicationForm.get('unit')?.invalid &&
+              (medicationForm.get('unit')?.touched ||
+                medicationForm.get('unit')?.dirty)
+            "
+          >
+            {{ day.name }}
+          </div>
+        </div>
+        <span
+          *ngIf="
+            !selectedDays.valid && medicationForm.get('selectedDays')?.touched
+          "
+          class="error"
+          >Select at least one day.</span
+        >
+        <div class="hours-section">
+          <h3>Select Hours</h3>
+          <div formArrayName="selectedHours" class="hours-container">
+            <div *ngFor="let hour of selectedHours.controls; let i = index">
+              <input
+                type="time"
+                [formControlName]="i"
+                placeholder="Select time"
+                class="hour-input"
+              />
+              <button type="button" (click)="removeHour(i)">Remove</button>
+            </div>
+          </div>
+          <div
+            class="error"
+            *ngIf="
+              !selectedHours.valid &&
+              medicationForm.get('selectedDays')?.touched
+            "
+          >
+            Set at least one hours
+          </div>
+          <button type="button" class="add-hour" (click)="addHour()">
+            Add Hour
+          </button>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn back" (click)="onClose()">Back</button>
+      <button class="btn submit" (click)="onSubmit()">Submit</button>
+    </div>
+  </div>
+</div>

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MedicationList } from '../../models/medication-list';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { medicationTrackerService } from '../../shared/services/medication-tracker.service';
 import { ActivatedRoute } from '@angular/router';
 
@@ -11,9 +11,9 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class MedicationTrackingComponent implements OnInit {
   showModal: boolean = false;
-  formValues: any;
   private medicationslist: MedicationList[] = [];
   public filteredMedications$ = new BehaviorSubject<MedicationList[]>([]);
+  private subscriptions: Subscription[] = [];
 
   constructor(
     private medicationTrackerService: medicationTrackerService,
@@ -22,7 +22,13 @@ export class MedicationTrackingComponent implements OnInit {
 
   ngOnInit(): void {
     this.medicationslist = this.route.snapshot.data['medications'];
-    this.handleSearchMedicine('');
+    const subscription = this.medicationTrackerService
+      .getMedicationList()
+      .subscribe((data: MedicationList[]) => {
+        this.medicationslist = data;
+        this.handleSearchMedicine('');
+      });
+    this.subscriptions.push(subscription);
   }
 
   handleSearchMedicine(searchString: string) {
@@ -42,10 +48,12 @@ export class MedicationTrackingComponent implements OnInit {
   closeModal(): void {
     this.showModal = false;
   }
-  onFormValuePassed(data: any) {
-    this.formValues = data;
+
+  handleSubmit(data: any) {
+    let sendingData = { ...data, lastUpdate: new Date() };
+    this.medicationTrackerService.addMedication(sendingData);
   }
-  handleSubmit() {
-    console.log(this.formValues);
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 }

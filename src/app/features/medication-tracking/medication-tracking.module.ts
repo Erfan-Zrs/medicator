@@ -4,18 +4,21 @@ import { MedicationTrackingComponent } from './medication-tracking.component';
 import { medicalTrackingRoutes } from './medical-tracking.routes';
 import { SearchBarModule } from '../../shared/components/search-bar/search-bar.module';
 import { MedicationDatePipe } from './pipes/date.pipe';
-import { ModalContainerModule } from '../../shared/components/modal-container/modal-container.module';
-import { MedicationFormModule } from '../../shared/components/medication-form/medication-form.module';
+import { MedicationModalModule } from '../../shared/components/medication-modal/medication-modal.module';
+import { FrequencyPipe } from './pipes/frequency.pipe';
 
 @NgModule({
   imports: [
     CommonModule,
     medicalTrackingRoutes,
     SearchBarModule,
-    ModalContainerModule,
-    MedicationFormModule,
+    MedicationModalModule,
   ],
-  declarations: [MedicationTrackingComponent, MedicationDatePipe],
+  declarations: [
+    MedicationTrackingComponent,
+    MedicationDatePipe,
+    FrequencyPipe,
+  ],
 })
 export class MedicationTrackingModule {
   bindOutsideClickListener() {
