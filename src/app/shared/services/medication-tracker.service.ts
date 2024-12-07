@@ -15,18 +15,33 @@ export class medicationTrackerService {
     this.medicationList$.next(parsedData);
   }
 
-  getMedicationList(): Observable<any[]> {
+  getMedicationList(): Observable<MedicationList[]> {
     return this.medicationList$.asObservable();
   }
-  addMedication(newMedication: any): void {
+  addMedication(newMedication: MedicationList): void {
     const currentList = this.medicationList$.value;
     const updatedList = [...currentList, newMedication];
     this.setLocalStorage(updatedList);
   }
-  deleteMedication(index: number): void {
-    const currentList = [...this.medicationList$.value];
-    currentList.splice(index, 1);
-    this.setLocalStorage(currentList);
+  deleteMedication(id: string): void {
+    const currentList = this.medicationList$.value;
+    const index = currentList.findIndex((item) => {
+      return item.id === id;
+    });
+    if (index !== -1) {
+      currentList.splice(index, 1);
+      this.setLocalStorage(currentList);
+    }
+  }
+  updateMedication(medication: MedicationList) {
+    const currentList = this.medicationList$.value;
+    const index = currentList.findIndex((item) => {
+      return item.id === medication.id;
+    });
+    if (index !== -1) {
+      currentList[index] = medication;
+      this.setLocalStorage(currentList);
+    }
   }
   private setLocalStorage(updatedList: any[]): void {
     localStorage.setItem('medicationList', JSON.stringify(updatedList));

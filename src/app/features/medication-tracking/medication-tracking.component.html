@@ -21,7 +21,7 @@
 
       <td>{{ item.lastUpdate | date }}</td>
       <td class="icon-container">
-        <img src="../../../assets/icons/edit.png" />
+        <img src="../../../assets/icons/edit.png" (click)="openModal(item)" />
       </td>
     </tr>
     {{
@@ -33,9 +33,10 @@
 <app-medication-modal
   [isVisible]="showModal"
   (close)="closeModal()"
-  (submit)="handleSubmit($event)"
+  (submit)="handleSubmit($event, modalData ? 'update' : 'create')"
+  (delete)="handleDelete($event)"
+  [data]="modalData"
 >
   <h3 class="modal-title">Add New Medication</h3>
-  <form></form>
 </app-medication-modal>
 }

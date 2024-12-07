@@ -5,4 +5,5 @@ export interface MedicationList {
   selectedDays: string[];
   selectedHours: string[];
   lastUpdate: Date;
+  id?: string;
 }

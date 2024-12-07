@@ -4,6 +4,7 @@ import {
   maxLengthArray,
   minLengthArray,
 } from '../../utils/form-array-validator';
+import { MedicationList } from '../../../models/medication-list';
 
 @Component({
   selector: 'app-medication-modal',
@@ -21,8 +22,10 @@ export class MedicationModalComponent {
     { name: 'Sun', value: 'sunday' },
   ];
   @Input() isVisible: boolean = false;
+  @Input() data!: MedicationList | null;
   @Output() close = new EventEmitter<void>();
   @Output() submit = new EventEmitter<void>();
+  @Output() delete = new EventEmitter<void>();
 
   constructor(private formBuilder: FormBuilder) {}
   medicationForm: FormGroup = this.formBuilder.group({
@@ -34,14 +37,41 @@ export class MedicationModalComponent {
       [],
       [minLengthArray(1), maxLengthArray(5)]
     ),
+    id: [''],
   });
   addHour(): void {
     this.selectedHours.push(this.formBuilder.control('00:00'));
   }
   ngOnInit(): void {
-    this.addHour();
+    if (this.data) {
+      this.setFormValues(this.data);
+    } else {
+      this.addHour();
+    }
   }
+  setFormValues(data: MedicationList) {
+    this.medicationForm.patchValue({
+      medicationName: data.medicationName,
+      dosage: data.dosage,
+      unit: data.unit,
+      id: data.id,
+    });
+    const selectedDaysArray = this.medicationForm.get(
+      'selectedDays'
+    ) as FormArray;
+    selectedDaysArray.clear();
+    data.selectedDays.forEach((day: string) => {
+      selectedDaysArray.push(this.formBuilder.control(day));
+    });
 
+    const selectedHoursArray = this.medicationForm.get(
+      'selectedHours'
+    ) as FormArray;
+    selectedHoursArray.clear();
+    data.selectedHours.forEach((hour: string) => {
+      selectedHoursArray.push(this.formBuilder.control(hour));
+    });
+  }
   get selectedDays(): FormArray {
     return this.medicationForm.get('selectedDays') as FormArray;
   }
@@ -64,18 +94,23 @@ export class MedicationModalComponent {
   removeHour(index: number): void {
     this.selectedHours.removeAt(index);
   }
-  onClose(): void {
+  onClose() {
     this.close.emit();
     this.medicationForm.reset();
     this.selectedDays.clear();
     this.selectedHours.clear();
   }
 
-  onSubmit(): void {
+  onSubmit() {
     this.medicationForm.markAllAsTouched();
     if (this.medicationForm.valid) {
       this.submit.emit(this.medicationForm.value);
       this.onClose();
     }
+  }
+
+  onDelete() {
+    this.delete.emit(this.medicationForm.value.id);
+    this.onClose();
   }
 }

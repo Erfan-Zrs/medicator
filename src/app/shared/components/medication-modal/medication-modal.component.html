@@ -99,7 +99,11 @@
     </div>
     <div class="modal-footer">
       <button class="btn back" (click)="onClose()">Back</button>
-      <button class="btn submit" (click)="onSubmit()">Submit</button>
+
+      <div class="action-buttons">
+        <button class="btn delete" (click)="onDelete()">Delete</button>
+        <button class="btn submit" (click)="onSubmit()">Confirm</button>
+      </div>
     </div>
   </div>
 </div>

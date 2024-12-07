@@ -11,9 +11,9 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class MedicationTrackingComponent implements OnInit {
   showModal: boolean = false;
+  modalData!: MedicationList | null;
   private medicationslist: MedicationList[] = [];
   public filteredMedications$ = new BehaviorSubject<MedicationList[]>([]);
-  private subscriptions: Subscription[] = [];
 
   constructor(
     private medicationTrackerService: medicationTrackerService,
@@ -22,13 +22,7 @@ export class MedicationTrackingComponent implements OnInit {
 
   ngOnInit(): void {
     this.medicationslist = this.route.snapshot.data['medications'];
-    const subscription = this.medicationTrackerService
-      .getMedicationList()
-      .subscribe((data: MedicationList[]) => {
-        this.medicationslist = data;
-        this.handleSearchMedicine('');
-      });
-    this.subscriptions.push(subscription);
+    this.filteredMedications$.next(this.medicationslist);
   }
 
   handleSearchMedicine(searchString: string) {
@@ -41,19 +35,46 @@ export class MedicationTrackingComponent implements OnInit {
     );
     this.filteredMedications$.next(filteredItems);
   }
-  openModal(): void {
+  openModal(data?: MedicationList): void {
     this.showModal = true;
+    if (data) {
+      this.modalData = data;
+    }
   }
 
   closeModal(): void {
     this.showModal = false;
+    this.modalData = null;
   }
 
-  handleSubmit(data: any) {
-    let sendingData = { ...data, lastUpdate: new Date() };
-    this.medicationTrackerService.addMedication(sendingData);
+  handleSubmit(data: any, method: 'update' | 'create') {
+    let sendingData =
+      method === 'create'
+        ? {
+            ...data,
+            lastUpdate: new Date(),
+            id: this.generateId(),
+          }
+        : {
+            ...data,
+            lastUpdate: new Date(),
+          };
+
+    method === 'create'
+      ? this.medicationTrackerService.addMedication(sendingData)
+      : this.medicationTrackerService.updateMedication(sendingData);
+    this.updateHandler();
   }
-  ngOnDestroy(): void {
-    this.subscriptions.forEach((sub) => sub.unsubscribe());
+  handleDelete(id: any) {
+    this.medicationTrackerService.deleteMedication(id);
+  }
+  generateId(): string {
+    return crypto.randomUUID();
+  }
+  updateHandler() {
+    this.medicationTrackerService.getMedicationList().subscribe((data) => {
+      this.medicationslist = data;
+      this.filteredMedications$.next(this.medicationslist);
+    });
   }
 }
