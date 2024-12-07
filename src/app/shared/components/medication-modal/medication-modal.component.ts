@@ -91,6 +91,7 @@ export class MedicationModalComponent {
     } else {
       this.selectedDays.removeAt(index);
     }
+    this.medicationForm.get('selectedDays')?.markAsTouched();
   }
 
   removeHour(index: number): void {
